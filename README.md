@@ -4,4 +4,4 @@ Kerenkan hidupmu
 Kelompok B3_08 \
 Ketua Kelompok: Adzka Bagus Juniarta-22/500276/TK/54824\
 Anggota 1: \
-Anggota 2: 
+Anggota 2: Dhimas Nurhanindya Putra-22/505433/TK/55309
