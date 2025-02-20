@@ -93,9 +93,10 @@ Kenal.in bertujuan untuk menyediakan solusi absensi otomatis berbasis teknologi 
 - **Sekolah atau Institusi Pendidikan:** Membutuhkan sistem pencatatan kehadiran otomatis untuk memudahkan administrasi dan menghindari absensi manual yang rentan terhadap manipulasi.
 
 ## Use Case Diagram
-![Use Case Diagram](docs/images/usecase-diagram.png)
+![Use Case Diagram](images/usecase-diagram.png)
 
 ## Functional Requirements untuk Use Case yang Telah Dirancang
+
 | **FR**  | **Deskripsi**  |
 |---------|---------------|
 | FR 1    | Sistem harus memungkinkan user untuk mendaftarkan wajah mereka menggunakan teknologi pengenalan wajah.  |
@@ -104,14 +105,15 @@ Kenal.in bertujuan untuk menyediakan solusi absensi otomatis berbasis teknologi 
 | FR 4    | Sistem harus memungkinkan admin untuk membuat event baru dalam sistem.  |
 | FR 5    | Sistem harus memungkinkan admin untuk mengunduh data presensi dari event yang telah dibuat.  |
 
+
 ## Entity Relationship Diagram
-![ERD](docs/images/ERD.png)
+![ERD](images/ERD.png)
 
 ## Low-Fidelity Wireframe
 ### **1. Halaman Pendaftaran Wajah**
-![Lofi Register](docs/images/lofi-registerface.png)
+![Lofi Register](images/lofi-registerface.png)
 ### **2. Halaman Absensi Menggunakan Pengenalan Wajah**
-![Lofi Absensi](docs/images/lofi-photo.png)
+![Lofi Absensi](images/lofi-photo.png)
 
 ## Gantt Chart Pengerjaan Proyek (1 Semester)
-![Gantt Chart](docs/images/gantchart.png)
+![Gantt Chart](images/gantchart.png)
