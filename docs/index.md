@@ -74,3 +74,44 @@ Bagaimana mengembangkan sistem absensi otomatis berbasis teknologi pengenalan wa
 - **Key Competitive Advantage & Unique Value:**
   - Sistem absensi face recognition gratis tanpa batasan pengguna
   - Integrasi fitur pelacakan lokasi dan geofencing
+
+## Metodologi SDLC
+### **Metodologi yang digunakan**
+**Agile Model**
+
+### **Alasan pemilihan metodologi**
+Karena fleksibilitasnya dalam menghadapi perubahan dan pengembangan fitur secara bertahap. Sistem ini melibatkan teknologi pengenalan wajah yang memerlukan pengujian dan penyempurnaan berulang agar akurasinya optimal. Agile memungkinkan pengembangan yang lebih cepat melalui iterasi kecil, sehingga setiap fitur seperti pendaftaran wajah, absensi otomatis, dan ekspor data bisa diuji dan disempurnakan sebelum implementasi penuh. Selain itu, Agile mendukung kolaborasi tim multidisiplin, mempercepat respons terhadap kebutuhan pasar, dan memastikan integrasi teknologi berjalan dengan baik. Agile lebih efektif dalam menangani tantangan teknis dan perubahan yang mungkin terjadi selama proses pengembangan dibandingkan dengan Waterfall.
+
+## Perancangan Tahap 1-3 SDLC
+### **Tujuan dari Produk**
+Kenal.in bertujuan untuk menyediakan solusi absensi otomatis berbasis teknologi pengenalan wajah. Sistem ini dirancang untuk mencatat kehadiran secara real-time dengan lebih akurat, meningkatkan keamanan data, serta memberikan kemudahan bagi organisasi ataupun perusahaan dalam mengelola daftar kehadiran secara efisien. Kenal.in bertujuan untuk menggantikan metode absensi konvensional yang tidak efisien dan rentan terhadap penyalahgunaan serta kesalahan pengelolaan absensi.
+
+### **Pengguna Potensial dari Produk dan Kebutuhan Para Pengguna**
+#### **Pengguna Potensial:**
+- **Perusahaan dan Organisasi:** Membutuhkan sistem absensi yang efisien, akurat, serta minim kontak untuk meningkatkan produktivitas dan mempermudah mengelola manajemen kehadiran karyawan.
+- **Penyelenggara Acara:** Membutuhkan sistem absensi yang cepat dan praktis untuk mencatat kehadiran peserta maupun panitia tanpa hambatan.
+- **Sekolah atau Institusi Pendidikan:** Membutuhkan sistem pencatatan kehadiran otomatis untuk memudahkan administrasi dan menghindari absensi manual yang rentan terhadap manipulasi.
+
+## Use Case Diagram
+![Use Case Diagram](docs/images/usecase-diagram.png)
+
+## Functional Requirements untuk Use Case yang Telah Dirancang
+| **FR**  | **Deskripsi**  |
+|---------|---------------|
+| FR 1    | Sistem harus memungkinkan user untuk mendaftarkan wajah mereka menggunakan teknologi pengenalan wajah.  |
+| FR 2    | Sistem harus memungkinkan user untuk melakukan presensi dengan memverifikasi wajah mereka yang telah terdaftar.  |
+| FR 3    | Sistem harus memungkinkan user untuk mengedit data wajah yang telah terdaftar.  |
+| FR 4    | Sistem harus memungkinkan admin untuk membuat event baru dalam sistem.  |
+| FR 5    | Sistem harus memungkinkan admin untuk mengunduh data presensi dari event yang telah dibuat.  |
+
+## Entity Relationship Diagram
+![ERD](docs/images/ERD.png)
+
+## Low-Fidelity Wireframe
+### **1. Halaman Pendaftaran Wajah**
+![Lofi Register](docs/images/lofi-registerface.png)
+### **2. Halaman Absensi Menggunakan Pengenalan Wajah**
+![Lofi Absensi](docs/images/lofi-photo.png)
+
+## Gantt Chart Pengerjaan Proyek (1 Semester)
+![Gantt Chart](docs/images/gantchart.png)
