@@ -93,7 +93,7 @@ Kenal.in bertujuan untuk menyediakan solusi absensi otomatis berbasis teknologi 
 - **Sekolah atau Institusi Pendidikan:** Membutuhkan sistem pencatatan kehadiran otomatis untuk memudahkan administrasi dan menghindari absensi manual yang rentan terhadap manipulasi.
 
 ## Use Case Diagram
-![Use Case Diagram](images/usecase-diagram.png)
+![Use Case Diagram](https://raw.githubusercontent.com/senpro-B3-08/Kenal.In/main/docs/images/usecase-diagram.png)
 
 ## Functional Requirements untuk Use Case yang Telah Dirancang
 
@@ -107,13 +107,13 @@ Kenal.in bertujuan untuk menyediakan solusi absensi otomatis berbasis teknologi 
 
 
 ## Entity Relationship Diagram
-![ERD](images/ERD.png)
+![ERD](https://raw.githubusercontent.com/senpro-B3-08/Kenal.In/main/docs/images/ERD.png)
 
 ## Low-Fidelity Wireframe
 ### **1. Halaman Pendaftaran Wajah**
-![Lofi Register](images/lofi-registerface.png)
+![Lofi Register](https://raw.githubusercontent.com/senpro-B3-08/Kenal.In/main/docs/images/lofi-registerface.png)
 ### **2. Halaman Absensi Menggunakan Pengenalan Wajah**
-![Lofi Absensi](images/lofi-photo.png)
+![Lofi Absensi](https://raw.githubusercontent.com/senpro-B3-08/Kenal.In/main/docs/images/lofi-photo.png)
 
 ## Gantt Chart Pengerjaan Proyek (1 Semester)
-![Gantt Chart](images/gantchart.png)
+![Gantt Chart](https://raw.githubusercontent.com/senpro-B3-08/Kenal.In/main/docs/images/gantchart.png)
