@@ -1,5 +1,5 @@
-# lyfe
-Kerenkan hidupmu 
+# Kenal.in
+Buat proses presensi cepet dan ga ribet
 
 Kelompok B3_08 \
 Ketua Kelompok: \
