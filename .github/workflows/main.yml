@@ -1,0 +1,97 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # 1) Frontend Build and Test
+  build-and-test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16  # or whichever version you prefer
+
+      - name: Install Frontend Dependencies
+        run: npm install
+        working-directory: ./frontend  # adjust path if needed
+
+      - name: Build Frontend
+        run: npm run build
+        working-directory: ./frontend  # adjust path if needed
+
+      - name: Test Frontend
+        run: npm test
+        working-directory: ./frontend  # adjust path if needed
+
+      # Optionally, you can upload build artifacts if you want
+      - name: Upload Frontend Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: ./frontend/build
+
+  # 2) Backend Build and Test
+  build-and-test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.9  # or whichever version you need
+
+      - name: Install Backend Dependencies
+        run: pip install -r requirements.txt
+        working-directory: ./backend  # adjust path if needed
+
+      - name: Test Backend
+        run: pytest
+        working-directory: ./backend  # adjust path if needed
+
+      # Optionally, upload backend artifacts (if you have a build step)
+      - name: Upload Backend Build Artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-dist
+          path: ./backend/dist  # adjust if you have compiled files
+
+  # 3) Deploy Step
+  deploy:
+    needs: 
+      - build-and-test-frontend
+      - build-and-test-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Download the artifacts from previous jobs if needed
+      - name: Download Frontend Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-build
+
+      - name: Download Backend Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-dist
+
+      # Example: Deploy to a hosting service or a cloud platform
+      - name: Deploy Application
+        run: |
+          echo "Deploying the application..."
+          # Place your actual deployment commands here, for example:
+          # 1. Copy build artifacts to your server or hosting
+          # 2. Run a Docker build/push to container registry
+          # 3. Use a deploy action for your specific platform
