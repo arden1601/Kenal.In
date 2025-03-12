@@ -28,30 +28,33 @@ const InfoSection = ({ image, title, description, buttonText }) => {
     };
   }, []);
 
-
   return (
     <div 
       id="information" 
       ref={sectionRef}
-      className="slide-from-left flex items-center justify-center gap-16 max-w-6xl mx-auto px-4 py-16"
+      className="slide-from-left max-w-6xl mx-auto px-4 py-16"
     >
-      <div className="flex-1">
-        <img 
-          src={image} 
-          alt="Information graphic" 
-          className="w-full max-w-md"
-        />
-      </div>
-      <div className="flex-1 space-y-6">
-        <h2 className="text-3xl font-bold text-gray-800">
-          {title}
-        </h2>
-        <p className="text-gray-600 leading-relaxed">
-          {description}
-        </p>
-        <button className="custom-button">
-          {buttonText}
-        </button>
+      <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+        <div className="w-full lg:w-1/2 flex justify-center mb-8 lg:mb-0">
+          <img 
+            src={image} 
+            alt="Information graphic" 
+            className="w-full max-w-sm md:max-w-md rounded-lg shadow-md"
+          />
+        </div>
+        <div className="w-full lg:w-1/2 space-y-6">
+          <h2 className="text-3xl font-bold text-gray-800 text-center lg:text-left">
+            {title}
+          </h2>
+          <p className="text-gray-600 leading-relaxed">
+            {description}
+          </p>
+          <div className="flex justify-center lg:justify-start">
+            <button className="bg-[#E34989] text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-[#FFADC6] hover:text-[#573C27] transition-colors">
+              {buttonText}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

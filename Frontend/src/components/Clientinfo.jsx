@@ -2,8 +2,8 @@ import React from 'react';
 
 const ClientStats = () => {
   return (
-    <div className="bg-[#FDEED9] py-16 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="bg-[#FDEED9] py-16 md:w-full">
+      <div className="max-w-6xl mx-auto px-4">
         <div className="mb-8">
           <h2 className="text-4xl font-bold text-[#573C27]">
             Helping a local{' '}
