@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ProfilePicturePlaceholder from "../../assets/ProfilePicturePlaceholder.png";
 import HiPencilAlt from "../../assets/HiPencilAlt.png";
 
+/**
+ * A component to display and edit the user's profile information.
+ *
+ * This component will display the user's name and email, and allow them to edit
+ * their name and profile picture. It will also display a button to save the changes.
+ */
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("Dhimas Nurhanindya Putra");
@@ -82,7 +88,7 @@ const Profile = () => {
       {/* BUTTON */}
       <button
         onClick={isEditing ? handleSave : () => setIsEditing(true)}
-        className="absolute inset-x-0 bottom-10 px-4 py-2 mx-8 bg-[#C95588] text-white rounded hover:brightness-[0.95] cursor-pointer transition-all duration-300">
+        className="absolute inset-x-0 font-bold bottom-10 px-4 py-2 mx-8 bg-[#C95588] text-white rounded hover:brightness-[0.95] cursor-pointer transition-all duration-300">
         {isEditing ? "Save" : "Edit"}
       </button>
     </div>
