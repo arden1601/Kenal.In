@@ -26,12 +26,12 @@ const Profile = () => {
   };
 
   return (
-    <div className="relative bg-white w-96 h-full rounded-xl shadow-lg p-6">
+    <div className="relative bg-white w-full md:w-96 h-auto md:h-full rounded-xl shadow-lg p-6 mb-6 md:mb-0">
       <div className="flex flex-col items-center gap-y-4">
         <h2 className="text-xl font-semibold text-[#573C27]">Profile</h2>
 
         {/* PROFILE PICTURE */}
-        <div className="relative size-72 mb-4">
+        <div className="relative w-48 h-48 md:size-72 mb-4">
           <img
             src={image || ProfilePicturePlaceholder}
             alt="Profile"
@@ -52,7 +52,7 @@ const Profile = () => {
           )}
         </div>
 
-        <div className="gap-y-1 flex min-w-64 flex-col items-center">
+        <div className="gap-y-1 flex w-full min-w-0 md:min-w-64 flex-col items-center">
           {/* NAMA */}
           {isEditing ? (
             <>
@@ -63,12 +63,12 @@ const Profile = () => {
                 className="mb-2 text-[#573C27] text-center w-full px-3 py-2 border rounded-sm border-[#573C27]"
                 placeholder="Type your name here"
               />
-              <p className="-mt-2 text-slate-500 italic">
+              <p className="-mt-2 text-slate-500 italic text-sm text-center">
                 change your name or face image above
               </p>
             </>
           ) : (
-            <h2 className="text-base text-[#573C27] font-semibold">
+            <h2 className="text-base text-[#573C27] font-semibold text-center break-words">
               {name ? (
                 name
               ) : (
@@ -80,7 +80,9 @@ const Profile = () => {
           )}
           {/* EMAIL */}
           {isEditing ? null : (
-            <p className="text-[#573C27] text-base">{email}</p>
+            <p className="text-[#573C27] text-base text-center break-words">
+              {email}
+            </p>
           )}
         </div>
       </div>
@@ -88,7 +90,7 @@ const Profile = () => {
       {/* BUTTON */}
       <button
         onClick={isEditing ? handleSave : () => setIsEditing(true)}
-        className="absolute inset-x-0 font-bold bottom-10 px-4 py-2 mx-8 bg-[#C95588] text-white rounded hover:brightness-[0.95] cursor-pointer transition-all duration-300">
+        className="absolute inset-x-0 font-bold bottom-6 md:bottom-10 px-4 py-2 mx-8 bg-[#C95588] text-white rounded hover:brightness-[0.95] cursor-pointer transition-all duration-300">
         {isEditing ? "Save" : "Edit"}
       </button>
     </div>

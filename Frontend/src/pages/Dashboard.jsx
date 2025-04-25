@@ -22,13 +22,13 @@ const Dashboard = () => {
       <CreateEventProvider>
         <JoinEventProvider>
           <Header page="Dashboard" />
-          <div className="w-full flex h-[730px] justify-center gap-x-6 pt-32 pb-12">
+          <div className="w-full flex flex-col md:flex-row h-auto md:h-[730px] justify-center gap-6 pt-32 pb-12 px-4 md:px-6">
             <Profile />
-            <div className="flex h-full flex-col gap-y-6 w-fit justify-center">
+            <div className="flex h-full flex-col gap-6 w-full md:w-fit justify-center">
               <CreateEvent />
               {/* <JoinEvent /> */}
             </div>
-            <div className="flex flex-col gap-y-6 w-fit justify-center">
+            <div className="flex flex-col gap-6 w-full md:w-fit justify-center">
               <CreatedEvent />
               {/* <EventParticipation /> */}
             </div>

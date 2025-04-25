@@ -53,7 +53,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="bg-white w-96 p-6 rounded-xl shadow-lg space-y-4 flex-1">
+    <div className="bg-white w-full md:w-96 p-4 md:p-6 rounded-xl shadow-lg space-y-4 flex-1">
       <h2 className="text-xl font-semibold text-[#573C27] text-center">
         Create Event
       </h2>
@@ -94,7 +94,7 @@ const CreateEvent = () => {
             />
           </div>
           {startTime && (
-            <p className="text-xs text-[#573C27] mt-1">
+            <p className="text-xs text-[#573C27] mt-1 break-words">
               Selected: {format(startTime, "PPPpp")}{" "}
               {/* PPPpp includes date and time */}
             </p>
@@ -118,7 +118,7 @@ const CreateEvent = () => {
             />
           </div>
           {endTime && (
-            <p className="text-xs text-[#573C27] mt-1">
+            <p className="text-xs text-[#573C27] mt-1 break-words">
               Selected: {format(endTime, "PPPpp")}{" "}
               {/* PPPpp includes date and time */}
             </p>
