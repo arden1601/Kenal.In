@@ -2,8 +2,8 @@ import Header from "../components/Dashboard/Header";
 import Profile from "../components/Dashboard/Profile";
 import CreateEvent from "../components/Dashboard/CreateEvent";
 import CreatedEvent from "../components/Dashboard/CreatedEvent";
-import JoinEvent from "../components/Dashboard/JoinEvent";
-import EventParticipation from "../components/Dashboard/EventParticipation";
+// import JoinEvent from "../components/Dashboard/JoinEvent";
+// import EventParticipation from "../components/Dashboard/EventParticipation";
 import { CreateEventProvider } from "../helper/context/CreateEventContext";
 import { JoinEventProvider } from "../helper/context/JoinEventContext";
 
@@ -26,11 +26,11 @@ const Dashboard = () => {
             <Profile />
             <div className="flex h-full flex-col gap-y-6 w-fit justify-center">
               <CreateEvent />
-              <JoinEvent />
+              {/* <JoinEvent /> */}
             </div>
             <div className="flex flex-col gap-y-6 w-fit justify-center">
               <CreatedEvent />
-              <EventParticipation />
+              {/* <EventParticipation /> */}
             </div>
           </div>
         </JoinEventProvider>

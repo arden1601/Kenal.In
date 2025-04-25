@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { DownloadCloud } from "lucide-react";
 import { useCreateEvent } from "../../helper/context/CreateEventContext";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 /**
  * Component to display the list of created events.
@@ -8,12 +9,19 @@ import { useCreateEvent } from "../../helper/context/CreateEventContext";
  * The component renders a table with the columns Event Name, Code, Start Date, End Date, and Recap.
  * The Recap column contains a button to download a CSV file containing the participants and their registration times.
  * The button is disabled if there are no participants for the event.
+ * Each row is clickable and routes to /cam/[code].
  */
 const CreatedEvent = () => {
   const { events, downloadRecap } = useCreateEvent();
+  const navigate = useNavigate(); // Get the navigate function
+
+  // Handler function for row click
+  const handleRowClick = (eventCode) => {
+    navigate(`/dashboard/cam/${eventCode}`);
+  };
 
   return (
-    <div className="bg-white w-[520px] p-6 rounded-xl shadow-lg space-y-4 flex-[0.5] overflow-y-auto">
+    <div className="bg-white w-[520px] p-6 rounded-xl shadow-lg space-y-4 flex-1 overflow-y-auto">
       <h2 className="text-xl font-semibold text-[#573C27] text-center">
         Created Events
       </h2>
@@ -45,7 +53,11 @@ const CreatedEvent = () => {
             </thead>
             <tbody className="bg-white">
               {events.map((event, index) => (
-                <tr key={index}>
+                // Add onClick handler and cursor style to the row
+                <tr
+                  key={index}
+                  onClick={() => handleRowClick(event.code)}
+                  className="cursor-pointer hover:bg-gray-100 transition-colors duration-150">
                   <td className="px-5 py-5 border-b border-gray-200 text-sm">
                     {event.name}
                   </td>
@@ -58,7 +70,10 @@ const CreatedEvent = () => {
                   <td className="px-5 w-40 py-5 border-b border-gray-200 text-sm">
                     {event.endTime ? format(event.endTime, "PPPpp") : "N/A"}
                   </td>
-                  <td className="px-5 py-5 border-b border-gray-200 text-sm">
+                  <td
+                    className="px-5 py-5 border-b border-gray-200 text-sm"
+                    onClick={(e) => e.stopPropagation()} // Prevent row click when clicking the button
+                  >
                     <button
                       onClick={() => downloadRecap(event)}
                       className={`
