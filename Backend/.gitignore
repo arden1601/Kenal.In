@@ -5,3 +5,4 @@ __pycache__
 venv2
 .env
 .python-version
+venv
