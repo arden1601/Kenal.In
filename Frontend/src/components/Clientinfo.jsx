@@ -1,5 +1,3 @@
-import React from 'react';
-
 const ClientStats = () => {
   return (
     <div className="bg-[#FDEED9] py-16 md:w-full">

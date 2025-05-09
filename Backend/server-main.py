@@ -145,7 +145,7 @@ async def recognize_face(file: UploadFile = File(...)):
             "similarity": round(top_match[1], 4) if top_match else 0
         }
 
-@app.post("/create-event/")
+@app.post("/events/")
 async def create_event(eventName: str = "", start_date: str = "", end_date: str = "", userId: str = ""):
     if not eventName or not start_date or not end_date:
         raise HTTPException(status_code=400, detail="Event name, start date, and end date are required")
@@ -164,7 +164,17 @@ async def create_event(eventName: str = "", start_date: str = "", end_date: str 
     event_container.upsert_item(event_doc)
 
     return {"message": "Event created successfully!", "eventId": eventId}
-    
+
+@app.get("/events/")
+async def get_events():
+    # Query all events
+    query = "SELECT * FROM c"
+    items = list(event_container.query_items(query=query, enable_cross_partition_query=True))
+
+    if not items:
+        raise HTTPException(status_code=404, detail="No events found")
+
+    return {"events": items}
 
 # @app.post("/recognize/")
 # async def recognize_face_single(file: UploadFile = File(...), embedding: list[float] = None ):
