@@ -18,7 +18,7 @@ JWT_EXPIRE_MINUTES = 60  # token valid for 60 minutes
 
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=JWT_EXPIRE_MINUTES)):
     to_encode = data.copy()
-    expire = datetime.now(datetime.timezone.utc) + expires_delta
+    expire = datetime.now().astimezone() + expires_delta  # Corrected the usage of astimezone()
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
@@ -48,7 +48,7 @@ async def login(email: str = "", password: str = ""):
     password_hash = hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     # Query Cosmos DB
-    query = f"SELECT * FROM {CONTAINER_NAME} WHERE email = '{email}' AND password = '{password_hash}'"
+    query = f"SELECT * FROM c WHERE c.email = '{email}' AND c.password = '{password_hash}'"
     items = list(container.query_items(query=query, enable_cross_partition_query=True))
 
     if not items:
@@ -56,7 +56,7 @@ async def login(email: str = "", password: str = ""):
 
     user = items[0]
     token_data = {
-        "userId": user["userId"],
+        "userId": user["id"],
         "email": user["email"]
     }
     access_token = create_access_token(data=token_data)
@@ -65,7 +65,7 @@ async def login(email: str = "", password: str = ""):
         "access_token": access_token,
         "token_type": "bearer",
         "user": {
-            "userId": user["userId"],
+            "userId": user["id"],
             "fullName": user["fullName"],
             "embedding": user["embedding"]
         }
