@@ -11,16 +11,19 @@ import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import CamView from "./components/Dashboard/Cam/CamView.jsx";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Router>
       <div className="relative">
+        <Toaster />
         <Routes>
           <Route
             path="/"
             element={
               <>
+                {/* <Toaster> */}
                 <Navbar />
                 <main className="relative">
                   <section id="home">

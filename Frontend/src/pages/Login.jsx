@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoWeb from '../assets/LOGO FREAKY AHH.png';
+import axios from 'axios';
+import { apiRoute } from '../helper/api/route';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,8 +22,26 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log('Login attempt with:', { email, password, rememberMe });
+    const loginFunction = axios.post(apiRoute.auth.login, {
+      email,
+      password,
+    });
+
+    toast.promise(loginFunction, {
+      loading: 'Logging in...',
+      success: (res) => {
+        if (res.status === 200) {
+          console.log('Login successful:', res.data);
+          return 'Login successful!';
+        } else {
+          return 'Login failed. Please try again.';
+        }
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+        return 'Login failed. Please try again.';
+      },
+    });
   };
 
   return (
@@ -61,7 +82,7 @@ const Login = () => {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-3 border rounded-md focus:outline-none"
@@ -119,7 +140,7 @@ const Login = () => {
         </form>
 
         <div className="mt-6 text-center" style={{ color: colors.darkBrown }}>
-          Don't have an account?{' '}
+          {`Don't have an account?`}
           <Link to="/register" className="hover:underline" style={{ color: colors.purple }}>
             Register
           </Link>

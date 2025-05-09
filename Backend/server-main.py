@@ -10,6 +10,8 @@ import hashlib
 import jwt
 from datetime import datetime, timedelta
 import numpy as np
+from fastapi.middleware.cors import CORSMiddleware
+from models import LoginData
 
 load_dotenv()
 
@@ -24,6 +26,19 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes
     return jwt.encode(to_encode, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 app = FastAPI()
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with specific origins if needed
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Cosmos DB setup
 COSMOS_URL = os.environ.get("COSMOS_CONNECTION_STRING")
@@ -41,9 +56,14 @@ event_container = db.get_container_client(EVENT_CONTAINER)
 blob_key = os.environ.get("BLOB_KEY")
 blob_conn_str = os.environ.get("BLOB_CONNECTION_STRING")
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Sensational Face Recognition API!"}
 
-@app.post("/login/")
-async def login(email: str = "", password: str = ""):
+@app.post("/login")
+async def login(payload: LoginData):
+    email = payload.email
+    password = payload.password
     if not email or not password:
         raise HTTPException(status_code=400, detail="Email and password are required")
 
@@ -73,11 +93,8 @@ async def login(email: str = "", password: str = ""):
             "embedding": user["embedding"]
         }
     }
-@app.get("/")
-async def root():
-    return {"message": "Welcome to the Sensational Face Recognition API!"}
 
-@app.post("/register/")
+@app.post("/register")
 async def register_face(file: UploadFile = File(...), fullName: str = "", email: str = "", password: str = "",):
     # Make the password hash
     password = password.encode('utf-8')
@@ -116,7 +133,7 @@ async def register_face(file: UploadFile = File(...), fullName: str = "", email:
 
     return {"message": "Account registered successfully!"}
 
-@app.post("/recognize-face/")
+@app.post("/recognize-face")
 async def recognize_face(file: UploadFile = File(...)):
     # Save uploaded file to temp
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
@@ -149,7 +166,7 @@ async def recognize_face(file: UploadFile = File(...)):
             "similarity": round(top_match[1], 4) if top_match else 0
         }
 
-@app.post("/events/")
+@app.post("/events")
 async def create_event(eventName: str = "", start_date: str = "", end_date: str = "", userId: str = ""):
     if not eventName or not start_date or not end_date:
         raise HTTPException(status_code=400, detail="Event name, start date, and end date are required")
@@ -199,11 +216,12 @@ async def update_event(eventId: str, file: UploadFile = File(...)):
     event["attendees"].append(userId)
     event_container.upsert_item(event)
 
-    return {"message": "Event updated successfully!",
-            "fullName": recognize_face_response["fullName"],
-            }
+    return {
+        "message": "Event updated successfully!",
+        "fullName": recognize_face_response["fullName"]
+    }
 
-@app.get("/events/")
+@app.get("/events")
 async def get_events():
     # Query all events
     query = "SELECT * FROM c"

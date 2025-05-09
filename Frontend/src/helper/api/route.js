@@ -1,7 +1,7 @@
 const mainRoute = import.meta.env.MAIN_ROUTE || 'localhost:8000';
 const authRoute = {
-    login: `http://${mainRoute}/api/auth/login`,
-    register: `http://${mainRoute}/api/auth/register`,
+    login: `http://${mainRoute}/login`,
+    register: `http://${mainRoute}/register`,
 }
 
 const eventsRoute = {
