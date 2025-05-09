@@ -1,6 +1,7 @@
 import os, uuid
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from azure.cosmos import CosmosClient
+from azure.storage.blob import BlobServiceClient
 import tempfile
 import shutil
 from utils import extract_embedding, find_most_similar_face
@@ -33,6 +34,10 @@ CONTAINER_NAME = "container1"
 client = CosmosClient.from_connection_string(COSMOS_URL, credential=COSMOS_KEY)
 db = client.get_database_client(DB_NAME)
 container = db.get_container_client(CONTAINER_NAME)
+
+blob_key = os.environ.get("BLOB_KEY")
+blob_conn_str = os.environ.get("BLOB_CONNECTION_STRING")
+
 
 @app.post("/login/")
 async def login(email: str = "", password: str = ""):
@@ -70,10 +75,11 @@ async def root():
     return {"message": "Welcome to the Sensational Face Recognition API!"}
 
 @app.post("/register/")
-async def register_face(file: UploadFile = File(...), fullName: str = "", email: str = "", password: str = ""):
+async def register_face(file: UploadFile = File(...), fullName: str = "", email: str = "", password: str = "",):
     # Make the password hash
     password = password.encode('utf-8')
     password = hashlib.sha256(password).hexdigest()
+    userId = str(uuid.uuid4())
     # Save uploaded file to temp
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
         shutil.copyfileobj(file.file, tmp)
@@ -81,13 +87,18 @@ async def register_face(file: UploadFile = File(...), fullName: str = "", email:
 
     # Extract embedding
     try:
+        blob_client = BlobServiceClient.from_connection_string(blob_conn_str)
         embedding = extract_embedding(tmp_path)
+        blob_client = blob_client.get_blob_client(container="face", blob=f"{userId}.jpg")
+        with open(tmp_path, "rb") as data:
+            blob_client.upload_blob(data)
+        os.remove(tmp_path)  # Clean up temp file
     except Exception as e:
-        return {"error": f"Failed to extract embedding: {str(e)}"}
+        raise ValueError({"error": f"Failed to extract embedding: {str(e)}"}) 
 
     # Create document
     doc = {
-        "id": str(uuid.uuid4()),
+        "id": userId,
         "email": email,
         "fullName": fullName,
         "password": password,

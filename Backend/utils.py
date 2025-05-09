@@ -3,8 +3,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 from deepface import DeepFace
 
 def extract_embedding(img_path: str):
-    embedding_result = DeepFace.represent(img_path=img_path, model_name="facenet512", detector_backend="mtcnn")
-    return np.array(embedding_result[0]["embedding"])
+    embedding_result = DeepFace.represent(img_path=img_path, model_name="Facenet512", detector_backend="fastmtcnn")
+    # normalize the embedding
+    embedding = np.array(embedding_result[0]["embedding"])
+    # normalize the embedding
+    normalized_embedding = embedding / np.linalg.norm(embedding)
+    return normalized_embedding
 
 def find_most_similar_face(input_embedding, stored_embeddings):
     input_vec = input_embedding.reshape(1, -1)
