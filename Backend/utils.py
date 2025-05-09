@@ -17,9 +17,13 @@ def find_most_similar_face(input_embedding, stored_embeddings):
     for doc in stored_embeddings:
         stored_vec = np.array(doc['embedding']).reshape(1, -1)
         score = cosine_similarity(input_vec, stored_vec)[0][0]
-        scores.append((doc['userId'], score))
+        scores.append((doc['id'], score))
 
     if scores:
         scores.sort(key=lambda x: x[1], reverse=True)
         return scores[0]
     return None
+
+def compare_embeddings(embedding1, embedding2):
+    similarity = cosine_similarity(embedding1.reshape(1, -1), embedding2.reshape(1, -1))[0][0]
+    return similarity

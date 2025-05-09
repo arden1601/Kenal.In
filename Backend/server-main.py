@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import hashlib
 import jwt
 from datetime import datetime, timedelta
+import numpy as np
 
 load_dotenv()
 
@@ -30,10 +31,12 @@ COSMOS_KEY = os.environ.get("COSMOS_KEY")
 
 DB_NAME = "sensational"
 CONTAINER_NAME = "container1"
+EVENT_CONTAINER = "events"
 
 client = CosmosClient.from_connection_string(COSMOS_URL, credential=COSMOS_KEY)
 db = client.get_database_client(DB_NAME)
 container = db.get_container_client(CONTAINER_NAME)
+event_container = db.get_container_client(EVENT_CONTAINER)
 
 blob_key = os.environ.get("BLOB_KEY")
 blob_conn_str = os.environ.get("BLOB_CONNECTION_STRING")
@@ -102,7 +105,7 @@ async def register_face(file: UploadFile = File(...), fullName: str = "", email:
         "email": email,
         "fullName": fullName,
         "password": password,
-        "embedding": embedding.tolist()
+        "embedding": np.array(embedding)
     }
 
     # Insert into Cosmos DB
@@ -110,7 +113,7 @@ async def register_face(file: UploadFile = File(...), fullName: str = "", email:
 
     return {"message": "Face registered successfully!"}
 
-@app.post("/recognize/")
+@app.post("/recognize-face/")
 async def recognize_face(file: UploadFile = File(...)):
     # Save uploaded file to temp
     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
@@ -129,10 +132,11 @@ async def recognize_face(file: UploadFile = File(...)):
     # Find most similar face
     top_match = find_most_similar_face(input_embedding, stored_docs)
 
+    os.remove(tmp_path)  # Clean up temp file
     if top_match and top_match[1] > 0.8:
         return {
             "recognized": True,
-            "userId": top_match[0],
+            "id": top_match[0],
             "similarity": round(top_match[1], 4)
         }
     else:
@@ -140,3 +144,55 @@ async def recognize_face(file: UploadFile = File(...)):
             "recognized": False,
             "similarity": round(top_match[1], 4) if top_match else 0
         }
+
+@app.post("/create-event/")
+async def create_event(eventName: str = "", start_date: str = "", end_date: str = "", userId: str = ""):
+    if not eventName or not start_date or not end_date:
+        raise HTTPException(status_code=400, detail="Event name, start date, and end date are required")
+
+    # Create event document
+    eventId = str(uuid.uuid4())
+    event_doc = {
+        "id": eventId,
+        "userId": userId,
+        "eventName": eventName,
+        "start_date": start_date,
+        "end_date": end_date
+    }
+
+    # Insert into Cosmos DB
+    event_container.upsert_item(event_doc)
+
+    return {"message": "Event created successfully!", "eventId": eventId}
+    
+
+# @app.post("/recognize/")
+# async def recognize_face_single(file: UploadFile = File(...), embedding: list[float] = None ):
+#     # embedding = dict(embedding)
+#     # if embedding is None or "user" not in embedding or "embedding" not in embedding["user"]:
+#         # return {"error": "Embedding object is required and must contain 'user' with 'embedding'."}
+#     # Extract user embedding from the object
+#     user_embedding = np.array(embedding, dtype=float)
+    
+#     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
+#         shutil.copyfileobj(file.file, tmp)
+#         tmp_path = tmp.name
+#     # Extract embedding
+#     try:
+#         input_embedding = extract_embedding(tmp_path)
+#     except Exception as e:
+#         return {"error": f"Failed to extract embedding: {str(e)}"}
+#     top_match = compare_embeddings(input_embedding, user_embedding)
+
+#      # Clean up temp file
+#     if top_match and top_match[1] > 0.8:
+#         return {
+#             "recognized": True,
+#             "id": top_match[0],
+#             "similarity": round(top_match[1], 4)
+#         }
+#     else:
+#         return {
+#             "recognized": False,
+#             "similarity": round(top_match[1], 4) if top_match else 0
+#         }
