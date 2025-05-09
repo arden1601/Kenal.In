@@ -8,7 +8,7 @@ def extract_embedding(img_path: str):
     embedding = np.array(embedding_result[0]["embedding"])
     # normalize the embedding
     normalized_embedding = embedding / np.linalg.norm(embedding)
-    return normalized_embedding
+    return np.array(normalized_embedding)
 
 def find_most_similar_face(input_embedding, stored_embeddings):
     input_vec = input_embedding.reshape(1, -1)

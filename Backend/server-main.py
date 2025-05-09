@@ -105,13 +105,16 @@ async def register_face(file: UploadFile = File(...), fullName: str = "", email:
         "email": email,
         "fullName": fullName,
         "password": password,
-        "embedding": np.array(embedding)
+        "embedding": embedding.tolist(),  # Convert numpy array to list
     }
 
     # Insert into Cosmos DB
-    container.upsert_item(doc)
+    try:
+        container.upsert_item(doc)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to register face: {str(e)}")
 
-    return {"message": "Face registered successfully!"}
+    return {"message": "Account registered successfully!"}
 
 @app.post("/recognize-face/")
 async def recognize_face(file: UploadFile = File(...)):
@@ -137,6 +140,7 @@ async def recognize_face(file: UploadFile = File(...)):
         return {
             "recognized": True,
             "id": top_match[0],
+            "fullName": next((doc["fullName"] for doc in stored_docs if doc["id"] == top_match[0]), None),
             "similarity": round(top_match[1], 4)
         }
     else:
@@ -157,13 +161,47 @@ async def create_event(eventName: str = "", start_date: str = "", end_date: str 
         "userId": userId,
         "eventName": eventName,
         "start_date": start_date,
-        "end_date": end_date
+        "end_date": end_date,
+        "attendees": []
     }
 
     # Insert into Cosmos DB
     event_container.upsert_item(event_doc)
 
     return {"message": "Event created successfully!", "eventId": eventId}
+
+@app.patch("/events-presensi/{eventId}")
+async def update_event(eventId: str, file: UploadFile = File(...)):
+    # Check if eventId is provided
+    if not eventId:
+        raise HTTPException(status_code=400, detail="Event ID is required")
+    
+    recognize_face_response = await recognize_face(file=file)
+    if not recognize_face_response["recognized"]:
+        raise HTTPException(status_code=400, detail="Face not recognized")
+    userId = recognize_face_response["id"]
+
+    # Query the event by ID
+    query = f"SELECT * FROM c WHERE c.id = '{eventId}'"
+    items = list(event_container.query_items(query=query, enable_cross_partition_query=True))
+
+    if not items:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    event = items[0]
+       # Check if userId is already in the attendees list
+    if userId in event.get("attendees", []):
+        raise HTTPException(status_code=400, detail="User already registered for this event")
+    
+    # Append the userId to the attendees list
+    if "attendees" not in event:
+        event["attendees"] = []
+    event["attendees"].append(userId)
+    event_container.upsert_item(event)
+
+    return {"message": "Event updated successfully!",
+            "fullName": recognize_face_response["fullName"],
+            }
 
 @app.get("/events/")
 async def get_events():
