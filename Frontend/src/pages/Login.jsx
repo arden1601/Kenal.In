@@ -1,65 +1,61 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import logoWeb from '../assets/LOGO FREAKY AHH.png';
-import axios from 'axios';
-import { apiRoute } from '../helper/api/route';
-import toast from 'react-hot-toast';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import logoWeb from "../assets/LOGO FREAKY AHH.png";
+import { useUser } from "../helper/context/UserContext";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+
+  // Access the login function and loading state from the UserContext
+  const { login, loading, error } = useUser();
 
   // Color palette from the provided image
   const colors = {
-    darkBrown: '#573C27',
-    tan: '#A98360',
-    cream: '#FDEED9',
-    lightPink: '#FFADC6',
-    purple: '#E34989'
+    darkBrown: "#573C27",
+    tan: "#A98360",
+    cream: "#FDEED9",
+    lightPink: "#FFADC6",
+    purple: "#E34989",
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const loginFunction = axios.post(apiRoute.auth.login, {
-      email,
-      password,
-    });
-
-    toast.promise(loginFunction, {
-      loading: 'Logging in...',
-      success: (res) => {
-        if (res.status === 200) {
-          console.log('Login successful:', res.data);
-          return 'Login successful!';
-        } else {
-          return 'Login failed. Please try again.';
-        }
-      },
-      error: (error) => {
-        console.error('Login error:', error);
-        return 'Login failed. Please try again.';
-      },
-    });
+    await login(email, password);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen" style={{ backgroundColor: colors.cream }}>
+    <div
+      className="flex flex-col items-center justify-center min-h-screen"
+      style={{ backgroundColor: colors.cream }}>
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
         <div className="mb-8 text-center">
           <div className="flex flex-col items-center justify-center mb-4">
-            <img src={logoWeb} alt="Logo" className="h-10 w-10 sm:h-12 sm:w-12 mb-2" />
-            <h1 className="text-2xl font-bold" style={{ color: colors.darkBrown }}>
+            <img
+              src={logoWeb}
+              alt="Logo"
+              className="h-10 w-10 sm:h-12 sm:w-12 mb-2"
+            />
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: colors.darkBrown }}>
               Kenal.<span style={{ color: colors.purple }}>In</span>
             </h1>
           </div>
-          <h2 className="text-xl font-medium" style={{ color: colors.darkBrown }}>Sign in</h2>
+          <h2
+            className="text-xl font-medium"
+            style={{ color: colors.darkBrown }}>
+            Sign in
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-1" style={{ color: colors.darkBrown }}>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium mb-1"
+              style={{ color: colors.darkBrown }}>
               Email
             </label>
             <input
@@ -69,13 +65,20 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border rounded-md focus:outline-none"
-              style={{ borderColor: colors.tan, backgroundColor: 'white', color: colors.darkBrown }}
+              style={{
+                borderColor: colors.tan,
+                backgroundColor: "white",
+                color: colors.darkBrown,
+              }}
               required
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1" style={{ color: colors.darkBrown }}>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-1"
+              style={{ color: colors.darkBrown }}>
               Password
             </label>
             <div className="relative">
@@ -86,16 +89,23 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full p-3 border rounded-md focus:outline-none"
-                style={{ borderColor: colors.tan, backgroundColor: 'white', color: colors.darkBrown }}
+                style={{
+                  borderColor: colors.tan,
+                  backgroundColor: "white",
+                  color: colors.darkBrown,
+                }}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                style={{ color: colors.tan }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                style={{ color: colors.tan }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor">
                   <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                   <path
                     fillRule="evenodd"
@@ -107,41 +117,30 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4"
-                style={{ accentColor: colors.purple }}
-              />
-              <label htmlFor="remember-me" className="ml-2 text-sm" style={{ color: colors.darkBrown }}>
-                Remember me
-              </label>
-            </div>
-            <a 
-              href="#" 
-              className="text-sm hover:underline" 
-              style={{ color: colors.purple }}
-            >
-              Forgot password?
-            </a>
-          </div>
-
           <button
             type="submit"
             className="w-full p-3 rounded-md text-white font-medium transition-colors mt-4"
-            style={{ backgroundColor: colors.purple, hover: { backgroundColor: colors.lightPink } }}
+            style={{
+              backgroundColor: colors.purple,
+              // hover: { backgroundColor: colors.lightPink }, // Tailwind hover is usually done with classes
+            }}
+            disabled={loading} // Disable button while loading
           >
-            Sign in
+            {loading ? "Signing In..." : "Sign in"}{" "}
+            {/* Change button text while loading */}
           </button>
+          {/* Optionally display error message */}
+          {error && (
+            <p className="text-red-500 text-center text-sm mt-2">{error}</p>
+          )}
         </form>
 
         <div className="mt-6 text-center" style={{ color: colors.darkBrown }}>
-          {`Don't have an account?`}
-          <Link to="/register" className="hover:underline" style={{ color: colors.purple }}>
+          {`Don't have an account? `}
+          <Link
+            to="/register"
+            className="hover:underline"
+            style={{ color: colors.purple }}>
             Register
           </Link>
         </div>
