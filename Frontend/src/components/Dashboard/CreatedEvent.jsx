@@ -1,24 +1,116 @@
 import { format } from "date-fns";
 import { DownloadCloud } from "lucide-react";
+import { useEffect } from "react";
 import { useCreateEvent } from "../../helper/context/CreateEventContext";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
-/**
- * Component to display the list of created events.
- *
- * The component renders a table with the columns Event Name, Code, Start Date, End Date, and Recap.
- * The Recap column contains a button to download a CSV file containing the participants and their registration times.
- * The button is disabled if there are no participants for the event.
- * Each row is clickable and routes to /cam/[code].
- */
 const CreatedEvent = () => {
-  const { events, downloadRecap } = useCreateEvent();
-  const navigate = useNavigate(); // Get the navigate function
+  const { events, downloadRecap, loadingEvents, eventError, getEvents } =
+    useCreateEvent();
+  const navigate = useNavigate();
 
-  // Handler function for row click
-  const handleRowClick = (eventCode) => {
-    navigate(`/dashboard/cam/${eventCode}`);
+  useEffect(() => {
+    getEvents();
+  }, [getEvents]);
+
+  const handleRowClick = (eventId) => {
+    navigate(`/dashboard/cam/${eventId}`);
   };
+
+  // Helper function to safely format dates, handling strings (including number strings),
+  // Unix timestamps (seconds), and Unix timestamps (milliseconds)
+  const safeFormatDate = (dateValue, formatString) => {
+    if (!dateValue) return "N/A"; // Return N/A for null, undefined, or empty string
+
+    let date;
+    if (typeof dateValue === "number") {
+      // Check if the number seems like milliseconds (large) or seconds (small)
+      // A rough heuristic: dates in the near future in milliseconds are > 10^12
+      // If the number is less than, say, the year 2000 in milliseconds, assume it's seconds.
+      // 10^12 is roughly the year 2001
+      if (dateValue < 1000000000000) {
+        // Assume it's a Unix timestamp in seconds
+        date = new Date(dateValue * 1000);
+        console.log(
+          `Attempting to parse number as seconds: ${dateValue} -> ${new Date(
+            dateValue * 1000
+          )}`
+        );
+      } else {
+        // Assume it's a Unix timestamp in milliseconds
+        date = new Date(dateValue);
+        console.log(
+          `Attempting to parse number as milliseconds: ${dateValue} -> ${new Date(
+            dateValue
+          )}`
+        );
+      }
+    } else if (typeof dateValue === "string") {
+      // Attempt to parse string as a number first
+      const numberValue = Number(dateValue); // Use Number() for potential floating points too
+      if (!isNaN(numberValue)) {
+        // If it's a valid number string, treat it as a timestamp (seconds or milliseconds)
+        if (numberValue < 1000000000000) {
+          // Assume seconds
+          date = new Date(numberValue * 1000);
+          console.log(
+            `Attempting to parse number string as seconds: "${dateValue}" -> ${new Date(
+              numberValue * 1000
+            )}`
+          );
+        } else {
+          // Assume milliseconds
+          date = new Date(numberValue);
+          console.log(
+            `Attempting to parse number string as milliseconds: "${dateValue}" -> ${new Date(
+              numberValue
+            )}`
+          );
+        }
+      } else {
+        // If it's not a number string, attempt to parse as a regular date string
+        date = new Date(dateValue);
+        console.log(
+          `Attempting to parse string as date: "${dateValue}" -> ${new Date(
+            dateValue
+          )}`
+        );
+      }
+    } else {
+      // Handle other unexpected types
+      console.warn(
+        `Received unexpected date value type: ${typeof dateValue}`,
+        dateValue
+      );
+      return "Invalid Type";
+    }
+
+    // Check if the date object is valid
+    if (isNaN(date.getTime())) {
+      console.warn(
+        `Invalid date value received: ${dateValue}`,
+        typeof dateValue
+      );
+      return "Invalid Date"; // Or some other indicator
+    }
+    return format(date, formatString);
+  };
+
+  if (loadingEvents) {
+    return (
+      <div className="bg-white w-full md:w-[520px] p-4 md:p-6 rounded-xl shadow-lg space-y-4 flex-1 overflow-y-auto text-center text-[#573C27]">
+        Loading events...
+      </div>
+    );
+  }
+
+  if (eventError) {
+    return (
+      <div className="bg-white w-full md:w-[520px] p-4 md:p-6 rounded-xl shadow-lg space-y-4 flex-1 overflow-y-auto text-center text-red-500">
+        Error loading events: {eventError}
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white w-full md:w-[520px] p-4 md:p-6 rounded-xl shadow-lg space-y-4 flex-1 overflow-y-auto">
@@ -38,7 +130,7 @@ const CreatedEvent = () => {
                   Event Name
                 </th>
                 <th className="px-2 md:px-5 py-2 md:py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
-                  Code
+                  Event ID
                 </th>
                 <th className="px-2 md:px-5 w-20 md:w-40 py-2 md:py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
                   Start
@@ -47,43 +139,50 @@ const CreatedEvent = () => {
                   End
                 </th>
                 <th className="px-2 md:px-5 py-2 md:py-3 border-b-2 border-gray-200 text-left text-xs font-semibold uppercase tracking-wider">
-                  Recap
+                  Attendees
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {events.map((event, index) => (
-                // Add onClick handler and cursor style to the row
+              {events.map((event) => (
                 <tr
-                  key={index}
-                  onClick={() => handleRowClick(event.code)}
+                  key={event.id}
+                  onClick={() => handleRowClick(event.id)}
                   className="cursor-pointer hover:bg-gray-100 transition-colors duration-150">
                   <td className="px-2 md:px-5 py-2 md:py-5 border-b border-gray-200 text-xs md:text-sm">
-                    <div className="truncate max-w-[80px] md:max-w-full">{event.name}</div>
+                    <div className="truncate max-w-[80px] md:max-w-full">
+                      {event.eventName}
+                    </div>
                   </td>
                   <td className="px-2 md:px-5 py-2 md:py-5 border-b border-gray-200 text-xs md:text-sm">
-                    {event.code}
+                    {event.id}
                   </td>
                   <td className="px-2 md:px-5 w-20 md:w-40 py-2 md:py-5 border-b border-gray-200 text-xs md:text-sm">
                     <div className="truncate">
-                      {event.startTime ? format(event.startTime, "PP") : "N/A"}
+                      {/* Use safeFormatDate helper */}
+                      {safeFormatDate(event.start_date, "PP")}
                     </div>
                     <div className="text-xs text-gray-500 truncate">
-                      {event.startTime ? format(event.startTime, "p") : ""}
+                      {/* Use safeFormatDate helper */}
+                      {safeFormatDate(event.start_date, "p")}
                     </div>
                   </td>
                   <td className="px-2 md:px-5 w-20 md:w-40 py-2 md:py-5 border-b border-gray-200 text-xs md:text-sm">
                     <div className="truncate">
-                      {event.endTime ? format(event.endTime, "PP") : "N/A"}
+                      {/* Use safeFormatDate helper */}
+                      {safeFormatDate(event.end_date, "PP")}
                     </div>
                     <div className="text-xs text-gray-500 truncate">
-                      {event.endTime ? format(event.endTime, "p") : ""}
+                      {/* Use safeFormatDate helper */}
+                      {safeFormatDate(event.end_date, "p")}
                     </div>
                   </td>
                   <td
                     className="px-2 md:px-5 py-2 md:py-5 border-b border-gray-200 text-xs md:text-sm"
-                    onClick={(e) => e.stopPropagation()} // Prevent row click when clicking the button
-                  >
+                    onClick={(e) => e.stopPropagation()}>
+                    <span className="mr-2">
+                      {event.attendeeDetails?.length || 0}
+                    </span>
                     <button
                       onClick={() => downloadRecap(event)}
                       className={`
@@ -93,12 +192,12 @@ const CreatedEvent = () => {
                         hover:bg-blue-100
                         transition-colors duration-200
                         ${
-                          event?.participants?.length === 0
+                          event.attendeeDetails?.length === 0
                             ? "cursor-not-allowed opacity-50"
                             : ""
                         }
                       `}
-                      disabled={event?.participants?.length === 0}>
+                      disabled={event.attendeeDetails?.length === 0}>
                       <DownloadCloud className="h-4 w-4" />
                     </button>
                   </td>
