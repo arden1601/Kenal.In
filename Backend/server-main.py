@@ -11,7 +11,7 @@ import jwt
 from datetime import datetime, timedelta
 import numpy as np
 from fastapi.middleware.cors import CORSMiddleware
-from models import LoginData
+from models import LoginData, RegisterData
 
 load_dotenv()
 
@@ -95,7 +95,16 @@ async def login(payload: LoginData):
     }
 
 @app.post("/register")
-async def register_face(file: UploadFile = File(...), fullName: str = "", email: str = "", password: str = "",):
+async def register_face(payload: RegisterData):
+    email = payload.email
+    password = payload.password
+    fullName = payload.fullName
+    # convert binary file to UploadFile
+    # file = UploadFile(file=payload.file.file, filename=payload.file.filename, content_type=payload.file.content_type)
+    file = payload.uploadedFile
+    # print("CHECK: ",file)
+    if not email or not password or not fullName:
+        raise HTTPException(status_code=400, detail="Email, password, and full name are required")
     # Make the password hash
     password = password.encode('utf-8')
     password = hashlib.sha256(password).hexdigest()
@@ -232,33 +241,3 @@ async def get_events():
 
     return {"events": items}
 
-# @app.post("/recognize/")
-# async def recognize_face_single(file: UploadFile = File(...), embedding: list[float] = None ):
-#     # embedding = dict(embedding)
-#     # if embedding is None or "user" not in embedding or "embedding" not in embedding["user"]:
-#         # return {"error": "Embedding object is required and must contain 'user' with 'embedding'."}
-#     # Extract user embedding from the object
-#     user_embedding = np.array(embedding, dtype=float)
-    
-#     with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp:
-#         shutil.copyfileobj(file.file, tmp)
-#         tmp_path = tmp.name
-#     # Extract embedding
-#     try:
-#         input_embedding = extract_embedding(tmp_path)
-#     except Exception as e:
-#         return {"error": f"Failed to extract embedding: {str(e)}"}
-#     top_match = compare_embeddings(input_embedding, user_embedding)
-
-#      # Clean up temp file
-#     if top_match and top_match[1] > 0.8:
-#         return {
-#             "recognized": True,
-#             "id": top_match[0],
-#             "similarity": round(top_match[1], 4)
-#         }
-#     else:
-#         return {
-#             "recognized": False,
-#             "similarity": round(top_match[1], 4) if top_match else 0
-#         }

@@ -2,6 +2,9 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Camera } from 'lucide-react';
 import logoWeb from '../assets/LOGO FREAKY AHH.png';
+import { apiRoute } from '../helper/api/route';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -29,7 +32,32 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your registration logic here
+    const formToSend = new FormData();
+    formToSend.append('email', email);
+    formToSend.append('password', password);
+    formToSend.append('fullName', fullName);
+    if (profilePhoto) {
+      formToSend.append('uploadedFile', profilePhoto);
+    }
+
+    const registerFunction = axios.post(apiRoute.auth.register, formToSend);
+    console.log(profilePhoto)
+    toast.promise(registerFunction, {
+      loading: 'Registering...',
+      success: (res) => {
+        if (res.status === 200) {
+          console.log('Registration successful:', res.data);
+          return 'Registration successful!';
+        } else {
+          return 'Registration failed. Please try again.';
+        }
+      },
+      error: (error) => {
+        console.error('Registration error:', error);
+        return 'Registration failed. Please try again.';
+      },
+    });
+
     console.log('Registration attempt with:', { email, password, confirmPassword, fullName, profilePhoto });
   };
 
