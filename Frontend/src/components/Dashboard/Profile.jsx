@@ -5,7 +5,7 @@ import HiPencilAlt from "../../assets/HiPencilAlt.png";
 
 const Profile = () => {
   // Access user data and authentication state from the UserContext
-  const { user, loading, error } = useUser();
+  const { user, loading, error, logout } = useUser();
 
   const [isEditing, setIsEditing] = useState(false);
   // Initialize local state with user data from context, or default values
@@ -163,6 +163,11 @@ const Profile = () => {
         className="absolute inset-x-0 font-bold bottom-6 md:bottom-10 px-4 py-2 mx-8 bg-[#C95588] text-white rounded hover:brightness-[0.95] cursor-pointer transition-all duration-300">
         {isEditing ? "Save" : "Edit"}
       </button> */}
+      <button
+        onClick={logout}
+        className="absolute inset-x-0 font-bold bottom-6 md:bottom-10 px-4 py-2 mx-8 bg-[#C95588] text-white rounded hover:brightness-[0.95] cursor-pointer transition-all duration-300">
+        Logout
+      </button>
     </div>
   );
 };
