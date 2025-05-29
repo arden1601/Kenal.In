@@ -5,7 +5,7 @@ from azure.cosmos import CosmosClient
 from azure.storage.blob import BlobServiceClient
 import tempfile
 import shutil
-from utils import extract_embedding, find_most_similar_face
+from main.utils import extract_embedding, find_most_similar_face
 from dotenv import load_dotenv
 import hashlib
 import jwt
@@ -76,7 +76,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -6,3 +6,4 @@ venv2
 .env
 .python-version
 venv
+azure-cli.txt

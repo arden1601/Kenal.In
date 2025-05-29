@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import logoWeb from '../assets/LOGO FREAKY AHH.png';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -82,14 +82,14 @@ const Navbar = () => {
   };
 
   // Function to open register in new tab
-  const openRegisterInNewTab = (e) => {
-    e.preventDefault();
-    window.open('/register', '_blank', 'noopener,noreferrer');
-    // Close mobile menu if it was open
-    if (isOpen) {
-      setIsOpen(false);
-    }
-  };
+  // const openRegisterInNewTab = (e) => {
+  //   e.preventDefault();
+  //   window.open('/register', '_blank', 'noopener,noreferrer');
+  //   // Close mobile menu if it was open
+  //   if (isOpen) {
+  //     setIsOpen(false);
+  //   }
+  // };
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-white py-4'}`}>
@@ -166,14 +166,12 @@ const Navbar = () => {
             ))}
             <div className="pt-2 pb-1">
               {/* Updated Register link in mobile menu to open in new tab */}
-              <a 
-                href="/register" 
+              <Link
+                to="/register" 
                 className="block w-full bg-[#E34989] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#FFADC6] hover:text-[#573C27] transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Register Now →
-              </a>
+              </Link>
             </div>
           </div>
         </div>

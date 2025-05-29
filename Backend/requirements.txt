@@ -7,7 +7,6 @@ python-multipart==0.0.20
 torch==2.2.0
 scipy==1.15.2
 facenet-pytorch==2.6.0
-weaviate-client
 streamlit
 azure-cosmos 
 azure-storage-blob 
