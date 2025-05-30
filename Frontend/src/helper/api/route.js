@@ -1,18 +1,18 @@
 const mainRoute = import.meta.env.VITE_MAIN_ROUTE || "localhost:8000";
 
 const authRoute = {
-  login: `http://${mainRoute}/login`,
-  register: `http://${mainRoute}/register`,
+  login: `${mainRoute}/login`,
+  register: `${mainRoute}/register`,
 };
 
 const eventsRoute = {
-  main: `http://${mainRoute}/events`,
-  getById: (id) => `http://${mainRoute}/events/${id}`,
-  presensi: (eventId) => `http://${mainRoute}/events-presensi/${eventId}`,
+  main: `${mainRoute}/events`,
+  getById: (id) => `${mainRoute}/events/${id}`,
+  presensi: (eventId) => `${mainRoute}/events-presensi/${eventId}`,
 };
 
 const faceRoute = {
-  recognize: `http://${mainRoute}/recognize-face`,
+  recognize: `${mainRoute}/recognize-face`,
 };
 
 export const apiRoute = {
