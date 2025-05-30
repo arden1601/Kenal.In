@@ -120,14 +120,12 @@ const Navbar = () => {
               </a>
             ))}
             {/* Updated Register link to open in new tab */}
-            <a 
-              href="/register" 
+            <Link 
+              to="/register" 
               className="bg-[#E34989] text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-[#FFADC6] hover:text-[#573C27] transition-colors whitespace-nowrap"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               Register Now →
-            </a>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
