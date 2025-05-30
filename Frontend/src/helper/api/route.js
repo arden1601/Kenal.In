@@ -1,4 +1,4 @@
-const mainRoute = import.meta.env.VITE_MAIN_ROUTE || "localhost:8000";
+const mainRoute = "https://be-senpro.azurewebsites.net";
 
 const authRoute = {
   login: `${mainRoute}/login`,
